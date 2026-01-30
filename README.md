@@ -8,12 +8,6 @@ A Pythonic interface to GitHub's REST API with typed models, automatic authentic
 pip install github-rest-api
 ```
 
-For reading tokens from `gh` CLI's hosts.yml file (optional):
-
-```bash
-pip install github-rest-api[yaml]
-```
-
 ## Quick Start
 
 ```python
@@ -36,7 +30,7 @@ The client automatically detects authentication tokens in this order:
 1. **Explicit token** - Pass directly to the constructor
 2. **Environment variables** - `GH_TOKEN` or `GITHUB_TOKEN`
 3. **gh CLI command** - Runs `gh auth token` (works with secure credential stores)
-4. **gh CLI hosts.yml** - Reads `~/.config/gh/hosts.yml` (requires `pyyaml`)
+4. **gh CLI hosts.yml** - Reads `~/.config/gh/hosts.yml`
 
 ```python
 # Auto-detect (recommended)
