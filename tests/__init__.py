@@ -1,1 +1,1 @@
-"""Tests for github-rest-api."""
+"""Tests for github-api-client."""

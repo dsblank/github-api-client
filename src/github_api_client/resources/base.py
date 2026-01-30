@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from github_rest_api.client import GitHub, AsyncGitHub
+    from github_api_client.client import AsyncGitHub, GitHub
 
 
 class Resource:

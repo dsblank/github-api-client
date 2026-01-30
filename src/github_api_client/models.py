@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Iterator
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from github_rest_api.repo import Repo, AsyncRepo
+    from github_api_client.repo import Repo
 
 
 def _parse_datetime(value: str | None) -> datetime | None:
@@ -196,7 +197,7 @@ class Issue:
     def from_dict(cls, data: dict[str, Any], repo: Repo | None = None) -> Issue:
         """Create Issue from API response dict."""
         assignees = [User.from_dict(a) for a in data.get("assignees", [])]
-        labels = [Label.from_dict(l) for l in data.get("labels", [])]
+        labels = [Label.from_dict(label_data) for label_data in data.get("labels", [])]
         milestone = None
         if data.get("milestone"):
             milestone = Milestone.from_dict(data["milestone"])
@@ -257,7 +258,7 @@ class Issue:
         data = self._repo._client.issues.add_labels(
             self._repo.owner, self._repo.name, self.number, list(labels)
         )
-        return [Label.from_dict(l) for l in data]
+        return [Label.from_dict(label_data) for label_data in data]
 
     def remove_label(self, label: str) -> None:
         """Remove a label from this issue."""
@@ -271,17 +272,13 @@ class Issue:
         """Lock this issue."""
         if self._repo is None:
             raise RuntimeError("Issue not bound to a repository")
-        self._repo._client.issues.lock(
-            self._repo.owner, self._repo.name, self.number, reason
-        )
+        self._repo._client.issues.lock(self._repo.owner, self._repo.name, self.number, reason)
 
     def unlock(self) -> None:
         """Unlock this issue."""
         if self._repo is None:
             raise RuntimeError("Issue not bound to a repository")
-        self._repo._client.issues.unlock(
-            self._repo.owner, self._repo.name, self.number
-        )
+        self._repo._client.issues.unlock(self._repo.owner, self._repo.name, self.number)
 
     def list_comments(self) -> Iterator[Comment]:
         """List comments on this issue."""
@@ -344,7 +341,7 @@ class PullRequest:
     def from_dict(cls, data: dict[str, Any], repo: Repo | None = None) -> PullRequest:
         """Create PullRequest from API response dict."""
         assignees = [User.from_dict(a) for a in data.get("assignees", [])]
-        labels = [Label.from_dict(l) for l in data.get("labels", [])]
+        labels = [Label.from_dict(label_data) for label_data in data.get("labels", [])]
         milestone = None
         if data.get("milestone"):
             milestone = Milestone.from_dict(data["milestone"])
@@ -481,17 +478,13 @@ class PullRequest:
         """List commits on this pull request."""
         if self._repo is None:
             raise RuntimeError("PullRequest not bound to a repository")
-        return self._repo._client.pulls.list_commits(
-            self._repo.owner, self._repo.name, self.number
-        )
+        return self._repo._client.pulls.list_commits(self._repo.owner, self._repo.name, self.number)
 
     def list_files(self) -> Iterator[dict[str, Any]]:
         """List files changed in this pull request."""
         if self._repo is None:
             raise RuntimeError("PullRequest not bound to a repository")
-        return self._repo._client.pulls.list_files(
-            self._repo.owner, self._repo.name, self.number
-        )
+        return self._repo._client.pulls.list_files(self._repo.owner, self._repo.name, self.number)
 
     @property
     def is_open(self) -> bool:
@@ -591,7 +584,7 @@ class Repository:
         except Exception:
             return False
 
-    def fork(self, organization: str | None = None) -> Repository:
+    def create_fork(self, organization: str | None = None) -> Repository:
         """Fork this repository."""
         if self._client is None:
             raise RuntimeError("Repository not bound to a client")
@@ -661,9 +654,7 @@ class SearchResult:
     items: list[Any]
 
     @classmethod
-    def from_dict(
-        cls, data: dict[str, Any], item_parser: Any = None
-    ) -> SearchResult:
+    def from_dict(cls, data: dict[str, Any], item_parser: Any = None) -> SearchResult:
         """Create SearchResult from API response dict."""
         items = data.get("items", [])
         if item_parser:

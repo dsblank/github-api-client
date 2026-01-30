@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Any, Iterator, AsyncIterator
+from collections.abc import AsyncIterator, Iterator
+from typing import Any
 
-from github_rest_api.resources.base import Resource, AsyncResource
+from github_api_client.resources.base import AsyncResource, Resource
 
 
 class PullsResource(Resource):
@@ -113,9 +114,7 @@ class PullsResource(Resource):
         Returns:
             Updated pull request data.
         """
-        return self._request(
-            "PATCH", f"/repos/{owner}/{repo}/pulls/{pull_number}", json=kwargs
-        )
+        return self._request("PATCH", f"/repos/{owner}/{repo}/pulls/{pull_number}", json=kwargs)
 
     def close(self, owner: str, repo: str, pull_number: int) -> dict[str, Any]:
         """Close a pull request without merging.
@@ -161,9 +160,7 @@ class PullsResource(Resource):
             data["commit_message"] = commit_message
         if sha:
             data["sha"] = sha
-        return self._request(
-            "PUT", f"/repos/{owner}/{repo}/pulls/{pull_number}/merge", json=data
-        )
+        return self._request("PUT", f"/repos/{owner}/{repo}/pulls/{pull_number}/merge", json=data)
 
     def is_merged(self, owner: str, repo: str, pull_number: int) -> bool:
         """Check if a pull request has been merged.
@@ -198,9 +195,7 @@ class PullsResource(Resource):
         Yields:
             Commit data dictionaries.
         """
-        yield from self._paginate(
-            "GET", f"/repos/{owner}/{repo}/pulls/{pull_number}/commits"
-        )
+        yield from self._paginate("GET", f"/repos/{owner}/{repo}/pulls/{pull_number}/commits")
 
     def list_files(
         self,
@@ -218,9 +213,7 @@ class PullsResource(Resource):
         Yields:
             File data dictionaries.
         """
-        yield from self._paginate(
-            "GET", f"/repos/{owner}/{repo}/pulls/{pull_number}/files"
-        )
+        yield from self._paginate("GET", f"/repos/{owner}/{repo}/pulls/{pull_number}/files")
 
     def list_reviews(
         self,
@@ -238,9 +231,7 @@ class PullsResource(Resource):
         Yields:
             Review data dictionaries.
         """
-        yield from self._paginate(
-            "GET", f"/repos/{owner}/{repo}/pulls/{pull_number}/reviews"
-        )
+        yield from self._paginate("GET", f"/repos/{owner}/{repo}/pulls/{pull_number}/reviews")
 
     def create_review(
         self,
@@ -332,9 +323,7 @@ class AsyncPullsResource(AsyncResource):
             params["head"] = head
         if base:
             params["base"] = base
-        async for item in self._paginate(
-            "GET", f"/repos/{owner}/{repo}/pulls", params=params
-        ):
+        async for item in self._paginate("GET", f"/repos/{owner}/{repo}/pulls", params=params):
             yield item
 
     async def create(
@@ -401,9 +390,7 @@ class AsyncPullsResource(AsyncResource):
     async def is_merged(self, owner: str, repo: str, pull_number: int) -> bool:
         """Check if a pull request has been merged."""
         try:
-            await self._request(
-                "GET", f"/repos/{owner}/{repo}/pulls/{pull_number}/merge"
-            )
+            await self._request("GET", f"/repos/{owner}/{repo}/pulls/{pull_number}/merge")
             return True
         except Exception:
             return False
@@ -427,9 +414,7 @@ class AsyncPullsResource(AsyncResource):
         pull_number: int,
     ) -> AsyncIterator[dict[str, Any]]:
         """List files changed in a pull request."""
-        async for item in self._paginate(
-            "GET", f"/repos/{owner}/{repo}/pulls/{pull_number}/files"
-        ):
+        async for item in self._paginate("GET", f"/repos/{owner}/{repo}/pulls/{pull_number}/files"):
             yield item
 
     async def list_reviews(

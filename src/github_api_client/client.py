@@ -2,27 +2,27 @@
 
 from __future__ import annotations
 
-import time
 import asyncio
-from typing import Any, Iterator
+import time
+from collections.abc import Iterator
+from typing import Any
 
 import httpx
 
-from github_rest_api.auth import get_token
-from github_rest_api.exceptions import (
+from github_api_client.auth import get_token
+from github_api_client.exceptions import (
     AuthenticationError,
     GitHubError,
     NotFoundError,
     RateLimitError,
     ValidationError,
 )
-from github_rest_api.repo import Repo, AsyncRepo
-from github_rest_api.resources.repos import ReposResource, AsyncReposResource
-from github_rest_api.resources.issues import IssuesResource, AsyncIssuesResource
-from github_rest_api.resources.pulls import PullsResource, AsyncPullsResource
-from github_rest_api.resources.users import UsersResource, AsyncUsersResource
-from github_rest_api.resources.search import SearchResource, AsyncSearchResource
-
+from github_api_client.repo import AsyncRepo, Repo
+from github_api_client.resources.issues import AsyncIssuesResource, IssuesResource
+from github_api_client.resources.pulls import AsyncPullsResource, PullsResource
+from github_api_client.resources.repos import AsyncReposResource, ReposResource
+from github_api_client.resources.search import AsyncSearchResource, SearchResource
+from github_api_client.resources.users import AsyncUsersResource, UsersResource
 
 BASE_URL = "https://api.github.com"
 _UNSET = object()  # Sentinel to distinguish None from "not provided"
@@ -407,9 +407,7 @@ class AsyncGitHub:
             params["page"] = page
             retries = 0
             while True:
-                response = await self._client.request(
-                    method, path, params=params, **kwargs
-                )
+                response = await self._client.request(method, path, params=params, **kwargs)
 
                 if response.status_code >= 400:
                     if self._auto_retry and _is_rate_limit_error(response):

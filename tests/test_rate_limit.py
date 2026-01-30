@@ -1,11 +1,11 @@
 """Tests for rate limit handling."""
 
 import time
-import pytest
-from pytest_httpx import HTTPXMock
 from unittest.mock import patch
 
-from github_rest_api import GitHub, RateLimitError
+import pytest
+from github_api_client import GitHub, RateLimitError
+from pytest_httpx import HTTPXMock
 
 
 class TestRateLimitHandling:

@@ -1,9 +1,8 @@
 """Tests for methods on Issue and PullRequest objects."""
 
 import pytest
+from github_api_client import Comment, GitHub, Issue, PullRequest
 from pytest_httpx import HTTPXMock
-
-from github_rest_api import GitHub, Issue, PullRequest, Comment
 
 
 class TestIssueMethods:
@@ -188,25 +187,27 @@ class TestIssueMethods:
 
     def test_issue_not_bound_raises_error(self):
         """Methods raise error when issue not bound to repo."""
-        issue = Issue.from_dict({
-            "id": 1,
-            "number": 42,
-            "title": "Test",
-            "body": None,
-            "state": "open",
-            "locked": False,
-            "user": None,
-            "assignee": None,
-            "assignees": [],
-            "labels": [],
-            "milestone": None,
-            "html_url": "",
-            "comments": 0,
-            "created_at": None,
-            "updated_at": None,
-            "closed_at": None,
-            "closed_by": None,
-        })
+        issue = Issue.from_dict(
+            {
+                "id": 1,
+                "number": 42,
+                "title": "Test",
+                "body": None,
+                "state": "open",
+                "locked": False,
+                "user": None,
+                "assignee": None,
+                "assignees": [],
+                "labels": [],
+                "milestone": None,
+                "html_url": "",
+                "comments": 0,
+                "created_at": None,
+                "updated_at": None,
+                "closed_at": None,
+                "closed_by": None,
+            }
+        )
 
         with pytest.raises(RuntimeError, match="not bound"):
             issue.close()
@@ -422,35 +423,37 @@ class TestPullRequestMethods:
 
     def test_pr_not_bound_raises_error(self):
         """Methods raise error when PR not bound to repo."""
-        pr = PullRequest.from_dict({
-            "id": 1,
-            "number": 123,
-            "title": "Test",
-            "body": None,
-            "state": "open",
-            "locked": False,
-            "draft": False,
-            "merged": False,
-            "mergeable": None,
-            "user": None,
-            "assignee": None,
-            "assignees": [],
-            "labels": [],
-            "milestone": None,
-            "html_url": "",
-            "head": {"ref": "", "sha": ""},
-            "base": {"ref": "", "sha": ""},
-            "comments": 0,
-            "commits": 0,
-            "additions": 0,
-            "deletions": 0,
-            "changed_files": 0,
-            "created_at": None,
-            "updated_at": None,
-            "closed_at": None,
-            "merged_at": None,
-            "merged_by": None,
-        })
+        pr = PullRequest.from_dict(
+            {
+                "id": 1,
+                "number": 123,
+                "title": "Test",
+                "body": None,
+                "state": "open",
+                "locked": False,
+                "draft": False,
+                "merged": False,
+                "mergeable": None,
+                "user": None,
+                "assignee": None,
+                "assignees": [],
+                "labels": [],
+                "milestone": None,
+                "html_url": "",
+                "head": {"ref": "", "sha": ""},
+                "base": {"ref": "", "sha": ""},
+                "comments": 0,
+                "commits": 0,
+                "additions": 0,
+                "deletions": 0,
+                "changed_files": 0,
+                "created_at": None,
+                "updated_at": None,
+                "closed_at": None,
+                "merged_at": None,
+                "merged_by": None,
+            }
+        )
 
         with pytest.raises(RuntimeError, match="not bound"):
             pr.approve()

@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Any, Iterator, AsyncIterator
+from collections.abc import AsyncIterator, Iterator
+from typing import Any
 
-from github_rest_api.resources.base import Resource, AsyncResource
+from github_api_client.resources.base import AsyncResource, Resource
 
 
 class IssuesResource(Resource):
@@ -129,9 +130,7 @@ class IssuesResource(Resource):
         Returns:
             Updated issue data.
         """
-        return self._request(
-            "PATCH", f"/repos/{owner}/{repo}/issues/{issue_number}", json=kwargs
-        )
+        return self._request("PATCH", f"/repos/{owner}/{repo}/issues/{issue_number}", json=kwargs)
 
     def close(self, owner: str, repo: str, issue_number: int) -> dict[str, Any]:
         """Close an issue.
@@ -177,9 +176,7 @@ class IssuesResource(Resource):
         data = {}
         if lock_reason:
             data["lock_reason"] = lock_reason
-        self._request(
-            "PUT", f"/repos/{owner}/{repo}/issues/{issue_number}/lock", json=data
-        )
+        self._request("PUT", f"/repos/{owner}/{repo}/issues/{issue_number}/lock", json=data)
 
     def unlock(self, owner: str, repo: str, issue_number: int) -> None:
         """Unlock an issue.
@@ -207,9 +204,7 @@ class IssuesResource(Resource):
         Yields:
             Comment data dictionaries.
         """
-        yield from self._paginate(
-            "GET", f"/repos/{owner}/{repo}/issues/{issue_number}/comments"
-        )
+        yield from self._paginate("GET", f"/repos/{owner}/{repo}/issues/{issue_number}/comments")
 
     def create_comment(
         self,
@@ -251,9 +246,7 @@ class IssuesResource(Resource):
         Yields:
             Label data dictionaries.
         """
-        yield from self._paginate(
-            "GET", f"/repos/{owner}/{repo}/issues/{issue_number}/labels"
-        )
+        yield from self._paginate("GET", f"/repos/{owner}/{repo}/issues/{issue_number}/labels")
 
     def add_labels(
         self,
@@ -294,9 +287,7 @@ class IssuesResource(Resource):
             issue_number: Issue number.
             label: Label name to remove.
         """
-        self._request(
-            "DELETE", f"/repos/{owner}/{repo}/issues/{issue_number}/labels/{label}"
-        )
+        self._request("DELETE", f"/repos/{owner}/{repo}/issues/{issue_number}/labels/{label}")
 
 
 class AsyncIssuesResource(AsyncResource):
@@ -338,9 +329,7 @@ class AsyncIssuesResource(AsyncResource):
             params["milestone"] = milestone
         if since:
             params["since"] = since
-        async for item in self._paginate(
-            "GET", f"/repos/{owner}/{repo}/issues", params=params
-        ):
+        async for item in self._paginate("GET", f"/repos/{owner}/{repo}/issues", params=params):
             if "pull_request" not in item:
                 yield item
 
@@ -397,15 +386,11 @@ class AsyncIssuesResource(AsyncResource):
         data = {}
         if lock_reason:
             data["lock_reason"] = lock_reason
-        await self._request(
-            "PUT", f"/repos/{owner}/{repo}/issues/{issue_number}/lock", json=data
-        )
+        await self._request("PUT", f"/repos/{owner}/{repo}/issues/{issue_number}/lock", json=data)
 
     async def unlock(self, owner: str, repo: str, issue_number: int) -> None:
         """Unlock an issue."""
-        await self._request(
-            "DELETE", f"/repos/{owner}/{repo}/issues/{issue_number}/lock"
-        )
+        await self._request("DELETE", f"/repos/{owner}/{repo}/issues/{issue_number}/lock")
 
     async def list_comments(
         self,
@@ -467,6 +452,4 @@ class AsyncIssuesResource(AsyncResource):
         label: str,
     ) -> None:
         """Remove a label from an issue."""
-        await self._request(
-            "DELETE", f"/repos/{owner}/{repo}/issues/{issue_number}/labels/{label}"
-        )
+        await self._request("DELETE", f"/repos/{owner}/{repo}/issues/{issue_number}/labels/{label}")

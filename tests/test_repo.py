@@ -1,9 +1,8 @@
 """Tests for repository-bound interface."""
 
 import pytest
+from github_api_client import Branch, GitHub, Issue, PullRequest, Repository, User
 from pytest_httpx import HTTPXMock
-
-from github_rest_api import GitHub, Issue, PullRequest, Repository, User, Branch
 
 
 class TestRepoInterface:

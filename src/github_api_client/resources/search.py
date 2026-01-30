@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Any, Iterator, AsyncIterator
+from collections.abc import AsyncIterator, Iterator
+from typing import Any
 
-from github_rest_api.resources.base import Resource, AsyncResource
+from github_api_client.resources.base import AsyncResource, Resource
 
 
 class SearchResource(Resource):
@@ -34,8 +35,7 @@ class SearchResource(Resource):
         params: dict[str, Any] = {"q": query, "order": order}
         if sort:
             params["sort"] = sort
-        for item in self._paginate("GET", "/search/issues", params=params):
-            yield item
+        yield from self._paginate("GET", "/search/issues", params=params)
 
     def repositories(
         self,
@@ -61,8 +61,7 @@ class SearchResource(Resource):
         params: dict[str, Any] = {"q": query, "order": order}
         if sort:
             params["sort"] = sort
-        for item in self._paginate("GET", "/search/repositories", params=params):
-            yield item
+        yield from self._paginate("GET", "/search/repositories", params=params)
 
     def code(
         self,
@@ -87,8 +86,7 @@ class SearchResource(Resource):
         params: dict[str, Any] = {"q": query, "order": order}
         if sort:
             params["sort"] = sort
-        for item in self._paginate("GET", "/search/code", params=params):
-            yield item
+        yield from self._paginate("GET", "/search/code", params=params)
 
     def users(
         self,
@@ -113,8 +111,7 @@ class SearchResource(Resource):
         params: dict[str, Any] = {"q": query, "order": order}
         if sort:
             params["sort"] = sort
-        for item in self._paginate("GET", "/search/users", params=params):
-            yield item
+        yield from self._paginate("GET", "/search/users", params=params)
 
     def commits(
         self,
@@ -139,12 +136,9 @@ class SearchResource(Resource):
         params: dict[str, Any] = {"q": query, "order": order}
         if sort:
             params["sort"] = sort
-        for item in self._paginate("GET", "/search/commits", params=params):
-            yield item
+        yield from self._paginate("GET", "/search/commits", params=params)
 
-    def _paginate(
-        self, method: str, path: str, params: dict[str, Any]
-    ) -> Iterator[dict[str, Any]]:
+    def _paginate(self, method: str, path: str, params: dict[str, Any]) -> Iterator[dict[str, Any]]:
         """Paginate through search results.
 
         Search API returns results in a different format than other endpoints.
@@ -156,7 +150,8 @@ class SearchResource(Resource):
             params["page"] = page
             response = self._client._client.request(method, path, params=params)
             if response.status_code >= 400:
-                from github_rest_api.client import _handle_error_response
+                from github_api_client.client import _handle_error_response
+
                 _handle_error_response(response)
 
             data = response.json()
@@ -251,7 +246,8 @@ class AsyncSearchResource(AsyncResource):
             params["page"] = page
             response = await self._client._client.request(method, path, params=params)
             if response.status_code >= 400:
-                from github_rest_api.client import _handle_error_response
+                from github_api_client.client import _handle_error_response
+
                 _handle_error_response(response)
 
             data = response.json()

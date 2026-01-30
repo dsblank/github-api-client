@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Any, Iterator, AsyncIterator
+from collections.abc import AsyncIterator, Iterator
+from typing import Any
 
-from github_rest_api.resources.base import Resource, AsyncResource
+from github_api_client.resources.base import AsyncResource, Resource
 
 
 class UsersResource(Resource):

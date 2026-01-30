@@ -1,30 +1,30 @@
 """A Pythonic interface to GitHub's REST API."""
 
-from github_rest_api.auth import (
+from github_api_client.auth import (
     get_token,
     get_token_from_env,
     get_token_from_gh_cli,
     get_token_from_hosts_file,
 )
-from github_rest_api.client import GitHub, AsyncGitHub
-from github_rest_api.exceptions import (
-    GitHubError,
+from github_api_client.client import AsyncGitHub, GitHub
+from github_api_client.exceptions import (
     AuthenticationError,
+    GitHubError,
     NotFoundError,
     RateLimitError,
     ValidationError,
 )
-from github_rest_api.repo import Repo, AsyncRepo
-from github_rest_api.models import (
+from github_api_client.models import (
+    Branch,
+    Comment,
     Issue,
+    Label,
+    Milestone,
     PullRequest,
     Repository,
     User,
-    Comment,
-    Label,
-    Milestone,
-    Branch,
 )
+from github_api_client.repo import AsyncRepo, Repo
 
 __version__ = "0.1.0"
 __all__ = [

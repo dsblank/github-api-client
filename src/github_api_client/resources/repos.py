@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Any, Iterator, AsyncIterator
+from collections.abc import AsyncIterator, Iterator
+from typing import Any
 
-from github_rest_api.resources.base import Resource, AsyncResource
+from github_api_client.resources.base import AsyncResource, Resource
 
 
 class ReposResource(Resource):
@@ -189,9 +190,7 @@ class ReposResource(Resource):
             Contributor data dictionaries.
         """
         params = {"anon": str(anon).lower()}
-        yield from self._paginate(
-            "GET", f"/repos/{owner}/{repo}/contributors", params=params
-        )
+        yield from self._paginate("GET", f"/repos/{owner}/{repo}/contributors", params=params)
 
     def list_languages(self, owner: str, repo: str) -> dict[str, int]:
         """List languages used in a repository.
@@ -236,9 +235,7 @@ class ReposResource(Resource):
         params: dict[str, Any] = {}
         if protected is not None:
             params["protected"] = str(protected).lower()
-        yield from self._paginate(
-            "GET", f"/repos/{owner}/{repo}/branches", params=params
-        )
+        yield from self._paginate("GET", f"/repos/{owner}/{repo}/branches", params=params)
 
 
 class AsyncReposResource(AsyncResource):
@@ -367,7 +364,5 @@ class AsyncReposResource(AsyncResource):
         params: dict[str, Any] = {}
         if protected is not None:
             params["protected"] = str(protected).lower()
-        async for item in self._paginate(
-            "GET", f"/repos/{owner}/{repo}/branches", params=params
-        ):
+        async for item in self._paginate("GET", f"/repos/{owner}/{repo}/branches", params=params):
             yield item

@@ -1,9 +1,7 @@
 """Tests for search API."""
 
-import pytest
+from github_api_client import GitHub
 from pytest_httpx import HTTPXMock
-
-from github_rest_api import GitHub
 
 
 class TestSearch:

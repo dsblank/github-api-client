@@ -1,17 +1,17 @@
-# github-rest-api
+# github-api-client
 
 A Pythonic interface to GitHub's REST API with typed models, automatic authentication, and rate limit handling.
 
 ## Installation
 
 ```bash
-pip install github-rest-api
+pip install github-api-client
 ```
 
 ## Quick Start
 
 ```python
-from github_rest_api import GitHub
+from github_api_client import GitHub
 
 gh = GitHub()  # Auto-detects token from environment or gh CLI
 repo = gh.repo("comet-ml/opik")
@@ -197,7 +197,7 @@ All operations are available in async form:
 
 ```python
 import asyncio
-from github_rest_api import AsyncGitHub
+from github_api_client import AsyncGitHub
 
 async def main():
     async with AsyncGitHub(auto_retry=True) as gh:
@@ -217,7 +217,7 @@ asyncio.run(main())
 ## Error Handling
 
 ```python
-from github_rest_api import (
+from github_api_client import (
     GitHub,
     GitHubError,
     AuthenticationError,
@@ -246,7 +246,7 @@ except GitHubError as e:
 ## Complete Example
 
 ```python
-from github_rest_api import GitHub
+from github_api_client import GitHub
 
 # Initialize with auto-retry
 gh = GitHub(auto_retry=True)

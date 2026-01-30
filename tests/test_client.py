@@ -1,14 +1,13 @@
 """Tests for the GitHub client."""
 
 import pytest
-from pytest_httpx import HTTPXMock
-
-from github_rest_api import GitHub, AsyncGitHub
-from github_rest_api.exceptions import (
+from github_api_client import AsyncGitHub, GitHub
+from github_api_client.exceptions import (
     AuthenticationError,
     NotFoundError,
     RateLimitError,
 )
+from pytest_httpx import HTTPXMock
 
 
 class TestGitHub:

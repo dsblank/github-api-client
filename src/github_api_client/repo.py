@@ -2,20 +2,21 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterator, AsyncIterator
+from collections.abc import AsyncIterator, Iterator
+from typing import TYPE_CHECKING, Any
 
-from github_rest_api.models import (
-    Issue,
-    PullRequest,
-    Comment,
-    Label,
-    Repository,
+from github_api_client.models import (
     Branch,
+    Comment,
+    Issue,
+    Label,
+    PullRequest,
+    Repository,
     User,
 )
 
 if TYPE_CHECKING:
-    from github_rest_api.client import GitHub, AsyncGitHub
+    from github_api_client.client import AsyncGitHub, GitHub
 
 
 class RepoIssues:
@@ -80,9 +81,7 @@ class RepoIssues:
 
     def update(self, issue_number: int, **kwargs: Any) -> Issue:
         """Update an issue."""
-        data = self._client.issues.update(
-            self._repo.owner, self._repo.name, issue_number, **kwargs
-        )
+        data = self._client.issues.update(self._repo.owner, self._repo.name, issue_number, **kwargs)
         return Issue.from_dict(data, self._repo)
 
     def close(self, issue_number: int) -> Issue:
@@ -97,9 +96,7 @@ class RepoIssues:
 
     def lock(self, issue_number: int, lock_reason: str | None = None) -> None:
         """Lock an issue."""
-        self._client.issues.lock(
-            self._repo.owner, self._repo.name, issue_number, lock_reason
-        )
+        self._client.issues.lock(self._repo.owner, self._repo.name, issue_number, lock_reason)
 
     def unlock(self, issue_number: int) -> None:
         """Unlock an issue."""
@@ -124,13 +121,11 @@ class RepoIssues:
         data = self._client.issues.add_labels(
             self._repo.owner, self._repo.name, issue_number, labels
         )
-        return [Label.from_dict(l) for l in data]
+        return [Label.from_dict(label_data) for label_data in data]
 
     def remove_label(self, issue_number: int, label: str) -> None:
         """Remove a label from an issue."""
-        self._client.issues.remove_label(
-            self._repo.owner, self._repo.name, issue_number, label
-        )
+        self._client.issues.remove_label(self._repo.owner, self._repo.name, issue_number, label)
 
 
 class RepoPulls:
@@ -189,9 +184,7 @@ class RepoPulls:
 
     def update(self, pull_number: int, **kwargs: Any) -> PullRequest:
         """Update a pull request."""
-        data = self._client.pulls.update(
-            self._repo.owner, self._repo.name, pull_number, **kwargs
-        )
+        data = self._client.pulls.update(self._repo.owner, self._repo.name, pull_number, **kwargs)
         return PullRequest.from_dict(data, self._repo)
 
     def close(self, pull_number: int) -> PullRequest:
@@ -224,21 +217,15 @@ class RepoPulls:
 
     def list_commits(self, pull_number: int) -> Iterator[dict[str, Any]]:
         """List commits on a pull request."""
-        return self._client.pulls.list_commits(
-            self._repo.owner, self._repo.name, pull_number
-        )
+        return self._client.pulls.list_commits(self._repo.owner, self._repo.name, pull_number)
 
     def list_files(self, pull_number: int) -> Iterator[dict[str, Any]]:
         """List files changed in a pull request."""
-        return self._client.pulls.list_files(
-            self._repo.owner, self._repo.name, pull_number
-        )
+        return self._client.pulls.list_files(self._repo.owner, self._repo.name, pull_number)
 
     def list_reviews(self, pull_number: int) -> Iterator[dict[str, Any]]:
         """List reviews on a pull request."""
-        return self._client.pulls.list_reviews(
-            self._repo.owner, self._repo.name, pull_number
-        )
+        return self._client.pulls.list_reviews(self._repo.owner, self._repo.name, pull_number)
 
     def create_review(
         self,
@@ -400,9 +387,7 @@ class AsyncRepoIssues:
 
     async def get(self, issue_number: int) -> Issue:
         """Get an issue by number."""
-        data = await self._client.issues.get(
-            self._repo.owner, self._repo.name, issue_number
-        )
+        data = await self._client.issues.get(self._repo.owner, self._repo.name, issue_number)
         return Issue.from_dict(data, self._repo)
 
     async def list(
@@ -462,29 +447,21 @@ class AsyncRepoIssues:
 
     async def close(self, issue_number: int) -> Issue:
         """Close an issue."""
-        data = await self._client.issues.close(
-            self._repo.owner, self._repo.name, issue_number
-        )
+        data = await self._client.issues.close(self._repo.owner, self._repo.name, issue_number)
         return Issue.from_dict(data, self._repo)
 
     async def reopen(self, issue_number: int) -> Issue:
         """Reopen an issue."""
-        data = await self._client.issues.reopen(
-            self._repo.owner, self._repo.name, issue_number
-        )
+        data = await self._client.issues.reopen(self._repo.owner, self._repo.name, issue_number)
         return Issue.from_dict(data, self._repo)
 
     async def lock(self, issue_number: int, lock_reason: str | None = None) -> None:
         """Lock an issue."""
-        await self._client.issues.lock(
-            self._repo.owner, self._repo.name, issue_number, lock_reason
-        )
+        await self._client.issues.lock(self._repo.owner, self._repo.name, issue_number, lock_reason)
 
     async def unlock(self, issue_number: int) -> None:
         """Unlock an issue."""
-        await self._client.issues.unlock(
-            self._repo.owner, self._repo.name, issue_number
-        )
+        await self._client.issues.unlock(self._repo.owner, self._repo.name, issue_number)
 
     async def list_comments(self, issue_number: int) -> AsyncIterator[Comment]:
         """List comments on an issue."""
@@ -500,14 +477,12 @@ class AsyncRepoIssues:
         )
         return Comment.from_dict(data, self._repo)
 
-    async def add_labels(
-        self, issue_number: int, labels: list[str]
-    ) -> list[Label]:
+    async def add_labels(self, issue_number: int, labels: list[str]) -> list[Label]:
         """Add labels to an issue."""
         data = await self._client.issues.add_labels(
             self._repo.owner, self._repo.name, issue_number, labels
         )
-        return [Label.from_dict(l) for l in data]
+        return [Label.from_dict(label_data) for label_data in data]
 
     async def remove_label(self, issue_number: int, label: str) -> None:
         """Remove a label from an issue."""
@@ -525,9 +500,7 @@ class AsyncRepoPulls:
 
     async def get(self, pull_number: int) -> PullRequest:
         """Get a pull request by number."""
-        data = await self._client.pulls.get(
-            self._repo.owner, self._repo.name, pull_number
-        )
+        data = await self._client.pulls.get(self._repo.owner, self._repo.name, pull_number)
         return PullRequest.from_dict(data, self._repo)
 
     async def list(
@@ -581,9 +554,7 @@ class AsyncRepoPulls:
 
     async def close(self, pull_number: int) -> PullRequest:
         """Close a pull request without merging."""
-        data = await self._client.pulls.close(
-            self._repo.owner, self._repo.name, pull_number
-        )
+        data = await self._client.pulls.close(self._repo.owner, self._repo.name, pull_number)
         return PullRequest.from_dict(data, self._repo)
 
     async def merge(
@@ -607,9 +578,7 @@ class AsyncRepoPulls:
 
     async def is_merged(self, pull_number: int) -> bool:
         """Check if a pull request has been merged."""
-        return await self._client.pulls.is_merged(
-            self._repo.owner, self._repo.name, pull_number
-        )
+        return await self._client.pulls.is_merged(self._repo.owner, self._repo.name, pull_number)
 
     async def list_commits(self, pull_number: int) -> AsyncIterator[dict[str, Any]]:
         """List commits on a pull request."""
@@ -702,9 +671,7 @@ class AsyncRepo:
 
     async def contributors(self, anon: bool = False) -> AsyncIterator[User]:
         """List repository contributors."""
-        async for data in self._client.repos.list_contributors(
-            self.owner, self.name, anon=anon
-        ):
+        async for data in self._client.repos.list_contributors(self.owner, self.name, anon=anon):
             yield User.from_dict(data)
 
     async def languages(self) -> dict[str, int]:
@@ -716,9 +683,7 @@ class AsyncRepo:
         async for item in self._client.repos.list_tags(self.owner, self.name):
             yield item
 
-    async def branches(
-        self, protected: bool | None = None
-    ) -> AsyncIterator[Branch]:
+    async def branches(self, protected: bool | None = None) -> AsyncIterator[Branch]:
         """List repository branches."""
         async for data in self._client.repos.list_branches(
             self.owner, self.name, protected=protected

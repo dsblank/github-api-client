@@ -1,17 +1,17 @@
 """Tests for typed models."""
 
-import pytest
 from datetime import datetime, timezone
 
-from github_rest_api.models import (
+import pytest
+from github_api_client.models import (
+    Branch,
+    Comment,
     Issue,
+    Label,
+    Milestone,
     PullRequest,
     Repository,
     User,
-    Comment,
-    Label,
-    Milestone,
-    Branch,
     _parse_datetime,
 )
 

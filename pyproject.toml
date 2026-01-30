@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "github-rest-api"
+name = "github-api-client"
 version = "0.1.0"
 description = "A Pythonic interface to GitHub's REST API"
 readme = "README.md"
@@ -36,11 +36,11 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/dsblank/github-rest-api"
-Repository = "https://github.com/dsblank/github-rest-api"
+Homepage = "https://github.com/dsblank/github-api-client"
+Repository = "https://github.com/dsblank/github-api-client"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/github_rest_api"]
+packages = ["src/github_api_client"]
 
 [tool.ruff]
 line-length = 100
