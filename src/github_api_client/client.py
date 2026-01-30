@@ -20,6 +20,7 @@ from github_api_client.exceptions import (
 from github_api_client.repo import AsyncRepo, Repo
 from github_api_client.resources.issues import AsyncIssuesResource, IssuesResource
 from github_api_client.resources.pulls import AsyncPullsResource, PullsResource
+from github_api_client.resources.releases import AsyncReleasesResource, ReleasesResource
 from github_api_client.resources.repos import AsyncReposResource, ReposResource
 from github_api_client.resources.search import AsyncSearchResource, SearchResource
 from github_api_client.resources.users import AsyncUsersResource, UsersResource
@@ -157,6 +158,7 @@ class GitHub:
         self.pulls = PullsResource(self)
         self.users = UsersResource(self)
         self.search = SearchResource(self)
+        self.releases = ReleasesResource(self)
 
     def request(
         self,
@@ -343,6 +345,7 @@ class AsyncGitHub:
         self.pulls = AsyncPullsResource(self)
         self.users = AsyncUsersResource(self)
         self.search = AsyncSearchResource(self)
+        self.releases = AsyncReleasesResource(self)
 
     async def request(
         self,

@@ -139,6 +139,49 @@ repo.subscribe()    # watch
 repo.unsubscribe()  # unwatch
 ```
 
+## Releases API
+
+Manage releases and release assets:
+
+```python
+repo = gh.repo("owner/repo")
+
+# List releases
+for release in repo.releases.list():
+    print(f"{release['tag_name']}: {release['name']}")
+
+# Get specific releases
+latest = repo.releases.get_latest()
+by_tag = repo.releases.get_by_tag("v1.0.0")
+by_id = repo.releases.get(123)
+
+# Create a release
+release = repo.releases.create(
+    tag_name="v1.0.0",
+    name="Version 1.0.0",
+    body="Release notes here",
+    draft=False,
+    prerelease=False,
+    generate_release_notes=True,
+)
+
+# Upload release assets
+asset = repo.releases.upload_asset(
+    release_id=release["id"],
+    file_path="dist/package-1.0.0.tar.gz",
+    content_type="application/gzip",
+)
+
+# List and manage assets
+for asset in repo.releases.list_assets(release["id"]):
+    print(f"{asset['name']}: {asset['size']} bytes")
+
+repo.releases.delete_asset(asset_id=456)
+
+# Delete a release
+repo.releases.delete(release_id=123)
+```
+
 ## Search API
 
 Search across all of GitHub:

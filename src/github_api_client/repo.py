@@ -261,6 +261,86 @@ class RepoPulls:
         return PullRequest.from_dict(data, self._repo)
 
 
+class RepoReleases:
+    """Release operations bound to a specific repository."""
+
+    def __init__(self, repo: Repo) -> None:
+        self._repo = repo
+        self._client = repo._client
+
+    def list(self) -> Iterator[dict[str, Any]]:
+        """List releases."""
+        yield from self._client.releases.list(self._repo.owner, self._repo.name)
+
+    def get(self, release_id: int) -> dict[str, Any]:
+        """Get a release by ID."""
+        return self._client.releases.get(self._repo.owner, self._repo.name, release_id)
+
+    def get_latest(self) -> dict[str, Any]:
+        """Get the latest release."""
+        return self._client.releases.get_latest(self._repo.owner, self._repo.name)
+
+    def get_by_tag(self, tag: str) -> dict[str, Any]:
+        """Get a release by tag name."""
+        return self._client.releases.get_by_tag(self._repo.owner, self._repo.name, tag)
+
+    def create(
+        self,
+        tag_name: str,
+        name: str | None = None,
+        body: str | None = None,
+        draft: bool = False,
+        prerelease: bool = False,
+        target_commitish: str | None = None,
+        generate_release_notes: bool = False,
+    ) -> dict[str, Any]:
+        """Create a release."""
+        return self._client.releases.create(
+            self._repo.owner,
+            self._repo.name,
+            tag_name=tag_name,
+            name=name,
+            body=body,
+            draft=draft,
+            prerelease=prerelease,
+            target_commitish=target_commitish,
+            generate_release_notes=generate_release_notes,
+        )
+
+    def update(self, release_id: int, **kwargs: Any) -> dict[str, Any]:
+        """Update a release."""
+        return self._client.releases.update(self._repo.owner, self._repo.name, release_id, **kwargs)
+
+    def delete(self, release_id: int) -> None:
+        """Delete a release."""
+        self._client.releases.delete(self._repo.owner, self._repo.name, release_id)
+
+    def list_assets(self, release_id: int) -> Iterator[dict[str, Any]]:
+        """List assets for a release."""
+        yield from self._client.releases.list_assets(self._repo.owner, self._repo.name, release_id)
+
+    def upload_asset(
+        self,
+        release_id: int,
+        file_path: str,
+        name: str | None = None,
+        content_type: str = "application/octet-stream",
+    ) -> dict[str, Any]:
+        """Upload a release asset."""
+        return self._client.releases.upload_asset(
+            self._repo.owner,
+            self._repo.name,
+            release_id,
+            file_path=file_path,
+            name=name,
+            content_type=content_type,
+        )
+
+    def delete_asset(self, asset_id: int) -> None:
+        """Delete a release asset."""
+        self._client.releases.delete_asset(self._repo.owner, self._repo.name, asset_id)
+
+
 class Repo:
     """A GitHub repository with bound owner/repo context.
 
@@ -292,6 +372,7 @@ class Repo:
         # Bound resource handlers
         self.issues = RepoIssues(self)
         self.pulls = RepoPulls(self)
+        self.releases = RepoReleases(self)
 
     def get(self) -> Repository:
         """Get repository details."""
@@ -635,6 +716,92 @@ class AsyncRepoPulls:
         return PullRequest.from_dict(data, self._repo)
 
 
+class AsyncRepoReleases:
+    """Async release operations bound to a specific repository."""
+
+    def __init__(self, repo: AsyncRepo) -> None:
+        self._repo = repo
+        self._client = repo._client
+
+    async def list(self) -> AsyncIterator[dict[str, Any]]:
+        """List releases."""
+        async for item in self._client.releases.list(self._repo.owner, self._repo.name):
+            yield item
+
+    async def get(self, release_id: int) -> dict[str, Any]:
+        """Get a release by ID."""
+        return await self._client.releases.get(self._repo.owner, self._repo.name, release_id)
+
+    async def get_latest(self) -> dict[str, Any]:
+        """Get the latest release."""
+        return await self._client.releases.get_latest(self._repo.owner, self._repo.name)
+
+    async def get_by_tag(self, tag: str) -> dict[str, Any]:
+        """Get a release by tag name."""
+        return await self._client.releases.get_by_tag(self._repo.owner, self._repo.name, tag)
+
+    async def create(
+        self,
+        tag_name: str,
+        name: str | None = None,
+        body: str | None = None,
+        draft: bool = False,
+        prerelease: bool = False,
+        target_commitish: str | None = None,
+        generate_release_notes: bool = False,
+    ) -> dict[str, Any]:
+        """Create a release."""
+        return await self._client.releases.create(
+            self._repo.owner,
+            self._repo.name,
+            tag_name=tag_name,
+            name=name,
+            body=body,
+            draft=draft,
+            prerelease=prerelease,
+            target_commitish=target_commitish,
+            generate_release_notes=generate_release_notes,
+        )
+
+    async def update(self, release_id: int, **kwargs: Any) -> dict[str, Any]:
+        """Update a release."""
+        return await self._client.releases.update(
+            self._repo.owner, self._repo.name, release_id, **kwargs
+        )
+
+    async def delete(self, release_id: int) -> None:
+        """Delete a release."""
+        await self._client.releases.delete(self._repo.owner, self._repo.name, release_id)
+
+    async def list_assets(self, release_id: int) -> AsyncIterator[dict[str, Any]]:
+        """List assets for a release."""
+        async for item in self._client.releases.list_assets(
+            self._repo.owner, self._repo.name, release_id
+        ):
+            yield item
+
+    async def upload_asset(
+        self,
+        release_id: int,
+        file_path: str,
+        name: str | None = None,
+        content_type: str = "application/octet-stream",
+    ) -> dict[str, Any]:
+        """Upload a release asset."""
+        return await self._client.releases.upload_asset(
+            self._repo.owner,
+            self._repo.name,
+            release_id,
+            file_path=file_path,
+            name=name,
+            content_type=content_type,
+        )
+
+    async def delete_asset(self, asset_id: int) -> None:
+        """Delete a release asset."""
+        await self._client.releases.delete_asset(self._repo.owner, self._repo.name, asset_id)
+
+
 class AsyncRepo:
     """An async GitHub repository with bound owner/repo context.
 
@@ -654,6 +821,7 @@ class AsyncRepo:
         # Bound resource handlers
         self.issues = AsyncRepoIssues(self)
         self.pulls = AsyncRepoPulls(self)
+        self.releases = AsyncRepoReleases(self)
 
     async def get(self) -> Repository:
         """Get repository details."""
