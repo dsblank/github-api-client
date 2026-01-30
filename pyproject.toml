@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 authors = [
-    { name = "Your Name", email = "you@example.com" }
+    { name = "Doug Blank", email = "doug.blank@gmail.com" }
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -39,8 +39,8 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/github-rest-api"
-Repository = "https://github.com/yourusername/github-rest-api"
+Homepage = "https://github.com/dsblank/github-rest-api"
+Repository = "https://github.com/dsblank/github-rest-api"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/github_rest_api"]
